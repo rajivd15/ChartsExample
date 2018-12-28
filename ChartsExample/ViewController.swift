@@ -62,15 +62,37 @@ class LineChart: UIView {
     var yMin: CGFloat = 0
     
     var data: [CGPoint]?
-}
-
-extension String {
-    func size(whithSystemFontSize pointSize: CGFloat) -> CGSize {
-        return (self as NSString).size(withAttributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: pointSize)])
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        combinedInit()
     }
-}
-
-extension CGPoint {
-    func adding(x: CGFloat) -> CGPoint { return CGPoint(x: self.x + x, y: self.y) }
-    func adding(y: CGFloat) -> CGPoint { return CGPoint(x: self.x, y: self.y + y) }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        combinedInit()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        lineLayer.frame = bounds
+        circlesLayer.frame = bounds
+        
+        if let d = data {
+//            setTransform(minX: xMin, maxX: xMax, minY: yMin, maxY: yMax)
+//            plot(d)
+        }
+    }
+    
+    func combinedInit() {
+        layer.addSublayer(lineLayer)
+        lineLayer.fillColor = UIColor.clear.cgColor
+        lineLayer.strokeColor = lineColor.cgColor
+        
+        layer.addSublayer(circlesLayer)
+        circlesLayer.fillColor = circleColor.cgColor
+        
+        layer.borderWidth = 1.0
+        layer.borderColor = axisColor.cgColor
+    }
 }
