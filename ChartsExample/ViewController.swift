@@ -95,4 +95,44 @@ class LineChart: UIView {
         layer.borderWidth = 1.0
         layer.borderColor = axisColor.cgColor
     }
+    
+    func setAxisRange(forPoints points: [CGPoint]) {
+        guard !points.isEmpty else {
+            return
+        }
+        
+        let xs = points.map() { $0.x }
+        let ys = points.map() { $0.y }
+        
+        xMax = ceil(xs.max()! / deltaX) * deltaX
+        yMax = ceil(ys.max()! / deltaY) * deltaY
+        xMin = 0
+        yMin = 0
+        
+        setTransform(minX: xMin, maxX: xMax, minY: yMin, maxY: yMax)
+    }
+    
+    func setAxisRange(xMin: CGFloat, xMax: CGFloat, yMin: CGFloat, yMax: CGFloat) {
+        self.xMin = xMin
+        self.xMax = xMax
+        self.yMin = yMin
+        self.yMax = yMax
+        
+        setTransform(minX: xMin, maxX: xMax, minY: yMin, maxY: yMax)
+    }
+    
+    func setTransform(minX: CGFloat, maxX: CGFloat, minY: CGFloat, maxY: CGFloat) {
+        
+        let xLabelSize = "\(Int(maxX))".size(whithSystemFontSize: labelFontSize)
+        let yLabelSize = "\(Int(maxY))".size(whithSystemFontSize: labelFontSize)
+        
+        let xOffset = xLabelSize.height + 2
+        let yOffset = yLabelSize.width + 5
+        
+        let xScale = (bounds.width - yOffset - xLabelSize.width/2 - 2) / (maxX - minX)
+        let yScale = (bounds.height - xOffset - yLabelSize.height/2 - 2) / (maxY - minY)
+        
+        chartTranform = CGAffineTransform(a: xScale, b: 0, c: 0, d: -yScale, tx: yOffset, ty: bounds.height - xOffset)
+        setNeedsDisplay()
+    }
 }
